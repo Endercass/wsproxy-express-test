@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test</title>
+    <script>
+      let socket = new WebSocket(
+        "ws://localhost:3001/tcpbin.com:4242",
+        "binary"
+      );
+      socket.addEventListener("open", function (event) {
+        console.log("[open] Connection established");
+        console.log("Sending to server");
+        socket.send("Hello, world!\n");
+      });
+      socket.addEventListener("message", function (event) {
+        event.data.text().then((data) => {
+          console.log(`[message] Data received from server: ${data}`);
+          let elem = document.createElement("p");
+          elem.innerHTML = data;
+          document.body.appendChild(elem);
+        });
+      });
+      function submit() {
+        console.log("Sending to server");
+        socket.send(document.getElementById("input").value + "\n");
+      }
+    </script>
+    <script>
+      let cfgSocket = new WebSocket("ws://localhost:3001/!cfg", "binary");
+      cfgSocket.addEventListener("open", function (event) {
+        console.log("[open] Connection established");
+        console.log("Sending to server");
+        cfgSocket.send("Hello, world!\n");
+      });
+      cfgSocket.addEventListener("message", function (event) {
+        let elem = document.createElement("p");
+        elem.innerHTML = event.data;
+        document.body.appendChild(elem);
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Test</h1>
+    <input id="input" type="text" id="input" />
+    <button id="button" onclick="submit()" type="submit">Submit</button>
+  </body>
+</html>
